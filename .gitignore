@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Exclude PRD and Setup Scripts
+*.docx
+seed-users.mjs
+supabase_setup.sql
+
+# Ignore PRD docs
+*.docx
+SIRS Online PRD v3.docx
