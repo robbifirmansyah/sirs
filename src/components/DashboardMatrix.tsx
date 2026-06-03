@@ -279,7 +279,7 @@ export default function DashboardMatrix({ initialRS }: { initialRS: RS[] }) {
             <tbody className="divide-y divide-zinc-50">
               {initialRS.map((rs) => (
                 <tr key={rs.id} className="hover:bg-zinc-50/80 transition-colors group">
-                  <td className="px-8 py-5 font-semibold text-zinc-800 sticky left-0 z-10 bg-white group-hover:bg-zinc-50/80 shadow-[1px_0_0_0_#f4f4f5] truncate max-w-[250px] transition-colors">
+                  <td className="px-8 py-5 font-semibold text-zinc-800 sticky left-0 z-10 bg-white group-hover:bg-zinc-50/80 shadow-[1px_0_0_0_#f4f4f5] whitespace-nowrap transition-colors">
                     <span className="inline-block px-2 py-1 bg-zinc-100 rounded-md text-[10px] font-bold text-zinc-500 mr-3">{rs.kode_rs}</span>
                     {rs.nama_rs}
                   </td>
