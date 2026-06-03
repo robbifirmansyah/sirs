@@ -34,17 +34,21 @@ export async function POST(req: Request) {
       else throw new Error("No RS found for this user.")
     }
 
+    // Mengambil body request (data yang dikirim dari form frontend)
     const body = await req.json()
     const { bulan, tahun, details } = body
 
-    // Server-side Validations
+    // Server-side Validations (Validasi di sisi server agar data tidak error)
     if (!bulan || !tahun || !details || !Array.isArray(details) || details.length === 0) {
       return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
     }
 
+    // Hitung jumlah hari dalam bulan tersebut (misal Februari = 28/29 hari)
     const maxDays = new Date(tahun, bulan, 0).getDate()
 
+    // Looping untuk mengecek setiap data poli yang dikirim
     for (const d of details) {
+      // Pastikan tidak ada input nilai negatif (minus)
       if (
         parseInt(d.dalam_kota_laki) < 0 ||
         parseInt(d.dalam_kota_perempuan) < 0 ||
@@ -53,13 +57,15 @@ export async function POST(req: Request) {
       ) {
         return NextResponse.json({ error: 'Nilai kunjungan tidak boleh negatif.' }, { status: 400 })
       }
+      
       const hb = parseInt(d.hari_buka)
+      // Pastikan hari buka tidak melebihi total hari dalam bulan tersebut
       if (hb < 0 || hb > maxDays) {
         return NextResponse.json({ error: `Hari buka tidak valid. Maksimal ${maxDays} hari untuk bulan ${bulan}/${tahun}.` }, { status: 400 })
       }
     }
 
-    // 1. Insert Induk
+    // 1. Insert ke tabel laporan_induk (sebagai header laporan)
     const { data: indukData, error: indukError } = await supabase
       .from('laporan_induk')
       .insert({

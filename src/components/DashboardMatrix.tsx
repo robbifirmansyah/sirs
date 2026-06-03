@@ -34,6 +34,8 @@ export default function DashboardMatrix({ initialRS }: { initialRS: RS[] }) {
     }
     load()
 
+    // Fitur Real-time dari Supabase: Jika ada RS yang baru saja submit laporan, 
+    // tabel ini akan otomatis ter-update tanpa perlu refresh halaman (seperti WhatsApp).
     const channel = supabase.channel('realtime_laporan')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'laporan_induk' }, (payload) => {
         const newRecord = payload.new as LaporanInduk
@@ -57,10 +59,14 @@ export default function DashboardMatrix({ initialRS }: { initialRS: RS[] }) {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
   const years = Array.from({length: 5}, (_, i) => new Date().getFullYear() - i)
 
+  // Variabel untuk menyimpan bulan ini (angka 1-12)
   const isCurrentYear = tahun === new Date().getFullYear()
+  // Hitung jumlah RS yang sudah lapor bulan ini
   const rsLaporBulanIni = isCurrentYear ? laporan.filter(l => l.bulan === currentMonth).length : 0
   const totalRS = initialRS.length
+  // Hitung yang belum lapor (Total dikurangi yang sudah lapor)
   const rsBelumLapor = totalRS - rsLaporBulanIni
+  // Rumus persentase kepatuhan: (Yang Lapor / Total RS) * 100
   const complianceRate = totalRS > 0 ? Math.round((rsLaporBulanIni / totalRS) * 100) : 0
 
   const exportMatrixToExcel = () => {

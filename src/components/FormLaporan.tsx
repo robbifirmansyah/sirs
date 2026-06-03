@@ -31,6 +31,7 @@ export default function FormLaporan({ masterPoli }: { masterPoli: MasterPoli[] }
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
+  // Fungsi untuk memvalidasi input sebelum lanjut ke pemilihan poli (Step 2)
   const handleNextToPoli = () => {
     if (!bulan || !tahun) {
       setErrorMsg("Bulan dan tahun wajib dipilih.")
@@ -41,17 +42,20 @@ export default function FormLaporan({ masterPoli }: { masterPoli: MasterPoli[] }
       return
     }
     setErrorMsg(null)
-    setStep(2)
+    setStep(2) // Lanjut ke langkah 2
   }
 
+  // Fungsi untuk menambah atau menghapus poli dari daftar yang dipilih
   const togglePoli = (id: string) => {
     const newSet = new Set(selectedPolis)
     if (newSet.has(id)) {
+      // Jika sudah ada, hapus poli dan datanya
       newSet.delete(id)
       const newDetails = { ...details }
       delete newDetails[id]
       setDetails(newDetails)
     } else {
+      // Jika belum ada, tambahkan dengan nilai default (0)
       newSet.add(id)
       setDetails({
         ...details,
@@ -68,6 +72,7 @@ export default function FormLaporan({ masterPoli }: { masterPoli: MasterPoli[] }
     setSelectedPolis(newSet)
   }
 
+  // Fungsi untuk memvalidasi sebelum masuk ke pengisian angka (Step 3)
   const handleNextToForm = () => {
     if (selectedPolis.size === 0) {
       setErrorMsg("Pilih minimal satu poliklinik untuk dilaporkan.")
@@ -77,10 +82,12 @@ export default function FormLaporan({ masterPoli }: { masterPoli: MasterPoli[] }
     setStep(3)
   }
 
+  // Menghitung otomatis jumlah hari dalam bulan yang dipilih
   const maxDaysInMonth = useMemo(() => {
     return new Date(tahun, bulan, 0).getDate()
   }, [bulan, tahun])
 
+  // Menyimpan data angka yang diketik user ke dalam state details
   const handleDetailChange = (poliId: string, field: keyof LaporanDetail, value: string) => {
     setDetails({
       ...details,
@@ -91,6 +98,7 @@ export default function FormLaporan({ masterPoli }: { masterPoli: MasterPoli[] }
     })
   }
 
+  // Validasi isi data sebelum disimpan (Step 4)
   const validateForm = (): boolean => {
     for (const [poliId, data] of Object.entries(details)) {
       const poliName = masterPoli.find(p => p.id === poliId)?.nama_poli || 'Poli'
