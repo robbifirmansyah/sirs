@@ -15,8 +15,8 @@ export default function RSLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const fetchRSName = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (user && user.user_metadata?.rs_name) {
-        setRsName(user.user_metadata.rs_name)
+      if (user && user.user_metadata) {
+        setRsName(user.user_metadata.nama_rs || user.user_metadata.rs_name || 'Rumah Sakit')
       }
     }
     fetchRSName()
@@ -39,11 +39,14 @@ export default function RSLayout({ children }: { children: React.ReactNode }) {
         {/* Subtle grid pattern background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff1a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff1a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
         
-        <div className="h-20 flex items-center px-8 relative z-10">
-          <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm border border-white/20 shadow-sm mr-3">
+        <div className="h-24 flex items-center px-8 relative z-10">
+          <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm border border-white/20 shadow-sm mr-3 shrink-0">
             <Activity className="w-5 h-5 text-white" />
           </div>
-          <span className="font-semibold text-xl tracking-tight text-white truncate">SIRS RS</span>
+          <div className="flex flex-col overflow-hidden">
+            <span className="font-bold text-lg tracking-tight text-white leading-tight">SIRS RS</span>
+            <span className="text-xs font-medium text-cyan-100 truncate mt-0.5" title={rsName}>{rsName}</span>
+          </div>
         </div>
         
         <div className="p-4 flex-1 overflow-y-auto space-y-1 relative z-10 mt-4">
@@ -91,11 +94,14 @@ export default function RSLayout({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
         {/* Mobile Header */}
         <header className="md:hidden h-16 bg-cyan-600 flex items-center justify-between px-4 z-20 shadow-sm text-white">
-          <div className="flex items-center">
-            <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm mr-2 border border-white/20">
+          <div className="flex items-center overflow-hidden">
+            <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm mr-2 border border-white/20 shrink-0">
               <Activity className="w-5 h-5 text-white" />
             </div>
-            <span className="font-semibold tracking-tight text-white">SIRS RS</span>
+            <div className="flex flex-col overflow-hidden">
+              <span className="font-semibold tracking-tight text-white leading-tight">SIRS RS</span>
+              <span className="text-[10px] font-medium text-cyan-100 truncate leading-none mt-1">{rsName}</span>
+            </div>
           </div>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
