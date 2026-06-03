@@ -43,7 +43,6 @@ next-env.d.ts
 # Exclude PRD and Setup Scripts
 *.docx
 seed-users.mjs
-supabase_setup.sql
 
 # Ignore PRD docs
 *.docx
